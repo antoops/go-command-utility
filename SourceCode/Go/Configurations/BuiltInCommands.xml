@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<BuiltInCommands>
+  <BuiltInCommand>
+    <Name>sn</Name>
+    <ActionScript>ServiceNow</ActionScript>
+    <Parameter>https://mycompany.service-now.com/</Parameter>
+  </BuiltInCommand>
+  <BuiltInCommand>
+    <Name>getmyip</Name>
+    <ActionScript>GetMyIP</ActionScript>
+    <Parameter></Parameter>
+  </BuiltInCommand>
+  <BuiltInCommand>
+    <Name>getmymac</Name>
+    <ActionScript>GetMyMAC</ActionScript>
+    <Parameter></Parameter>
+  </BuiltInCommand>
+</BuiltInCommands>

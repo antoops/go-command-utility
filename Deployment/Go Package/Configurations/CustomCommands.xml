@@ -1,0 +1,11 @@
+<?xml version="1.0" standalone="yes"?>
+<CustomCommands>
+  <Command>
+    <Name>email</Name>
+    <Profile>Official</Profile>
+  </Command>
+  <Command>
+    <Name>expense</Name>
+    <Profile>Personal</Profile>
+  </Command>
+</CustomCommands>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Profiles>
+  <Profile>
+    <Name>Personal</Name>
+    <CommandFilePath>C:\PersonalCommands.xml</CommandFilePath>
+  </Profile>
+  <Profile>
+    <Name>Official</Name>
+    <CommandFilePath>C:\OfficialCommands.xml</CommandFilePath>
+  </Profile>
+</Profiles>
