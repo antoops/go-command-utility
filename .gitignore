@@ -1,0 +1,18 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/SourceCode/.vs/Go/v16/Server/sqlite3
+/SourceCode/Go/bin/Debug
+/SourceCode/Go/obj/Debug
+/SourceCode/Go.DataAccess/bin/Debug/netstandard2.0
+/SourceCode/Go.DataAccess/obj/Debug/netstandard2.0
+/SourceCode/Go.DataAccess/obj/Release/netstandard2.0
+/SourceCode/Go.DataAccess/obj
+/SourceCode/Go.Entinties/bin/Debug/netstandard2.0
+/SourceCode/Go.Entinties/obj/Debug/netstandard2.0
+/SourceCode/Go.Entinties/obj/Release/netstandard2.0
+/SourceCode/Go.Entinties/obj
+/SourceCode/Go/obj/Release/Go.csproj.ResolveComReference.cache
+/SourceCode/Go/obj/Release/Interop.SHDocVw.dll
+/SourceCode/.vs/Go/v16/.suo
