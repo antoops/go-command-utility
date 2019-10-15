@@ -19,3 +19,6 @@
 /.vs/slnx.sqlite
 /.vs/ProjectSettings.json
 /.vs/go-command-utility/v16
+/.vs/VSWorkspaceState.json
+/SourceCode/.vs/Go/DesignTimeBuild
+/SourceCode/Go/obj/Release

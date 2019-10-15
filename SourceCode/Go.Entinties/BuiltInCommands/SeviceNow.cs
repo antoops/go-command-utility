@@ -11,6 +11,8 @@ namespace Go.Common.BuiltInCommands
         {
             string SNURL = Configuration;
             string OpenString = string.Empty;
+            string fullPath = string.Empty;
+            bool urlComplete = false;
             // Deciding whether the entered number is Incident/ChangeRequest/Problem
             if (parameter.StartsWith("inc"))
             {
@@ -20,7 +22,7 @@ namespace Go.Common.BuiltInCommands
             else if (parameter.StartsWith("chg"))
             {
                 // 2. Change : Setting url continuation for an Change request  
-                OpenString = "change_request.do?sys_id=";
+                OpenString = "nav_to.do?uri=change_request.do?sysparm_query=number=";
             }
             else if (parameter.StartsWith("ctask"))
             {
@@ -47,13 +49,20 @@ namespace Go.Common.BuiltInCommands
                 // 7. Request task : Setting url continuation for an request task
                 OpenString = "sc_request.do?sys_id=";
             }
+            else if (parameter.StartsWith("kb"))
+            {
+                // 8. Knowledge article : Setting url continuation for an KB
+                fullPath = SNURL + "nav_to.do?uri=%2Fkb_view.do%3Fsysparm_article%3D" +
+                    parameter + "%26sysparm_stack%3D%26sysparm_view%3D";
+                urlComplete = true;
+            }
             else
             {
-                // 8. default string for search 
+                // Default string for search 
                 OpenString = "textsearch.do?sysparm_view=text_search&sysparm_search=";
             }
-
-            string fullPath = SNURL + OpenString + parameter;
+            if(!urlComplete)
+                fullPath = SNURL + OpenString + parameter;
             Process.Start(fullPath);
             return true;
         }
