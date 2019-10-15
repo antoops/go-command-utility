@@ -30,12 +30,12 @@ namespace Go.DataAccess
             string customCommandsFilePath, string builtInComandsFilePath, string applicationStartupPath)
         {
             _xmlOperations = xmlOperations;
-            _profileFilePath = profileFilePath;
-            _customCommandsFilePath = customCommandsFilePath;
             //TODO parallel reading
             customCommandsFilePath = applicationStartupPath + "\\" + customCommandsFilePath;
             builtInComandsFilePath = applicationStartupPath + "\\" + builtInComandsFilePath;
             profileFilePath = applicationStartupPath + "\\" + profileFilePath;
+            _customCommandsFilePath = customCommandsFilePath;
+            _profileFilePath = profileFilePath;
             CustomCommandsDT = _xmlOperations.GetXml(customCommandsFilePath);
             ProfilesDT = _xmlOperations.GetXml(profileFilePath);
             BuiltInCommandsDT = _xmlOperations.GetXml(builtInComandsFilePath);
