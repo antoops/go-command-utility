@@ -1,6 +1,5 @@
 ﻿using Go.Common.Entities;
 using System.Net.NetworkInformation;
-using System.Windows.Forms;
 
 namespace Go.Common.BuiltInCommands
 {
@@ -19,7 +18,7 @@ namespace Go.Common.BuiltInCommands
                         break;
                     }
                 }
-                Clipboard.SetText(macAddress);
+                TextCopy.Clipboard.SetText(macAddress);
             }
             catch (System.Exception)
             {

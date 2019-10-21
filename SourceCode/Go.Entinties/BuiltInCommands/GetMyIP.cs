@@ -1,8 +1,6 @@
 ﻿using Go.Common.Entities;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Windows.Forms;
 
 namespace Go.Common.BuiltInCommands
 {
@@ -22,7 +20,7 @@ namespace Go.Common.BuiltInCommands
                         myIP = ip.ToString();
                     }
                 }
-                Clipboard.SetText(myIP);
+                TextCopy.Clipboard.SetText(myIP);
             }
             catch (System.Exception)
             {
