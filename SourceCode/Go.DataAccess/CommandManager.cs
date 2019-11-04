@@ -11,12 +11,17 @@ namespace Go.DataAccess
     public class CommandManager : ICommandManager
     {
         private readonly IXmlOperations _xmlOperations;
+        private readonly IProfileManager _profileManager;
         private readonly string _profileFilePath;
         private readonly string _customCommandsFilePath;
 
         public DataTable CustomCommandsDT{ get; set; }
         public DataTable BuiltInCommandsDT{ get; set; }
-        public DataTable ProfilesDT{ get; set; }
+        public DataTable ProfilesDT{ 
+            get
+            {
+                return _profileManager.GetProfileDT();
+            } }
         public List<Command> Commands { get; set; }
 
         public CommandManager(string profileFilePath, string commandsFilePath, string builtInComandsFilePath,
@@ -30,6 +35,7 @@ namespace Go.DataAccess
             string customCommandsFilePath, string builtInComandsFilePath, string applicationStartupPath)
         {
             _xmlOperations = xmlOperations;
+            _profileManager = new ProfileManager(profileFilePath, applicationStartupPath);
             //TODO parallel reading
             customCommandsFilePath = applicationStartupPath + "\\" + customCommandsFilePath;
             builtInComandsFilePath = applicationStartupPath + "\\" + builtInComandsFilePath;
@@ -37,8 +43,12 @@ namespace Go.DataAccess
             _customCommandsFilePath = customCommandsFilePath;
             _profileFilePath = profileFilePath;
             CustomCommandsDT = _xmlOperations.GetXml(customCommandsFilePath);
-            ProfilesDT = _xmlOperations.GetXml(profileFilePath);
             BuiltInCommandsDT = _xmlOperations.GetXml(builtInComandsFilePath);
+        }
+
+        public Profile GetProfile(string profileName)
+        {
+            return _profileManager.Get(profileName);
         }
 
         public bool isThisCustomCommandExists(string commandName)
@@ -86,10 +96,6 @@ namespace Go.DataAccess
             {
                 Sort = "Name"
             };
-            //DataView profileDV = new DataView(ProfilesDT)
-            //{
-            //    Sort = "Name"
-            //};
             int commandIndex = commandDV.Find(commandName);
 
             if (commandIndex == -1)
@@ -178,16 +184,17 @@ namespace Go.DataAccess
 
         private string GetProfileCommandPath(string profileName)
         {
-            var profileCommandPath = string.Empty;
-            foreach (DataRow item in ProfilesDT.Rows)
-            {
-                if (item[Constants.Name].ToString() == profileName)
-                {
-                    profileCommandPath = item[Constants.CommandFilePath].ToString();
-                    break;
-                }
-            }
-            return profileCommandPath;
+            //var profileCommandPath = string.Empty;
+            //foreach (DataRow item in ProfilesDT.Rows)
+            //{
+            //    if (item[Constants.Name].ToString() == profileName)
+            //    {
+            //        profileCommandPath = item[Constants.CommandFilePath].ToString();
+            //        break;
+            //    }
+            //}
+            //return profileCommandPath;
+            return _profileManager.GetCommandPath(profileName);
         }
 
         public bool UpdateCustomCommand(CustomCommand oldCustomCommand, CustomCommand newCustomCommand)
@@ -312,16 +319,67 @@ namespace Go.DataAccess
 
         public List<Profile> GetAllProfile()
         {
-            List<Profile> lstProfile = new List<Profile>();
-            foreach (DataRow item in ProfilesDT.Rows)
+            //List<Profile> lstProfile = new List<Profile>();
+            //foreach (DataRow item in ProfilesDT.Rows)
+            //{
+            //    lstProfile.Add(new Profile()
+            //    {
+            //        Name = item[Constants.Name].ToString(),
+            //        CommandFilePath = item[Constants.CommandFilePath].ToString()
+            //    });
+            //}
+            //return lstProfile;
+            return _profileManager.GetAll();
+        }
+
+        
+
+        public bool UpdateProfile(Profile oldProfile, Profile newProfile)
+        {
+            _profileManager.Update(oldProfile, newProfile);
+            var copyCustomCommandsDT = CustomCommandsDT.Copy();
+            foreach (DataRow dr in copyCustomCommandsDT.Rows)
             {
-                lstProfile.Add(new Profile()
+                if (dr[Constants.Profile].ToString() == oldProfile.Name)
                 {
-                    Name = item[Constants.Name].ToString(),
-                    CommandFilePath = item[Constants.CommandFilePath].ToString()
-                });
+                    //found the row, so update
+                    dr[Constants.Profile] = newProfile.Name;
+                }
+                else
+                    continue;
             }
-            return lstProfile;
+            _xmlOperations.WriteXml(copyCustomCommandsDT, _customCommandsFilePath);
+            CustomCommandsDT = copyCustomCommandsDT;
+            return true;
+        }
+
+        public bool AddProfile(Profile newProfile)
+        {
+            return _profileManager.Add(newProfile);
+        }
+
+        public bool isThisProfileExists(string newProfileName)
+        {
+            return _profileManager.isThisExists(newProfileName);
+        }
+
+        public bool DeleteProfile(string profileName)
+        {
+            //Delete the profile from profile config
+            _profileManager.Delete(profileName);
+            //delete the custom commands stored with that profile name
+            var copyCustomCommandsDT = CustomCommandsDT.Copy();
+            foreach (DataRow dataRow in copyCustomCommandsDT.Rows)
+            {
+                if (dataRow[Constants.Name].ToString() == profileName)
+                {
+                    copyCustomCommandsDT.Rows.Remove(dataRow);
+                    break;
+                }
+            }
+            _xmlOperations.WriteXml(copyCustomCommandsDT, _customCommandsFilePath);
+            CustomCommandsDT = copyCustomCommandsDT;
+            return true;
         }
     }
 }

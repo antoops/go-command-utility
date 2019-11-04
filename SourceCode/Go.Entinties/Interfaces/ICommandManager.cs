@@ -14,5 +14,12 @@ namespace Go.Common.Interfaces
         bool AddCustomCommand(CustomCommand customCommand);
         bool UpdateCustomCommand(CustomCommand oldCustomCommand, CustomCommand newCustomCommand);
         bool DeleteCustomCommand(CustomCommand customCommand);
+        //Profile
+        Profile GetProfile(string profileName);
+        bool UpdateProfile(Profile oldProfile, Profile newProfile);
+        bool AddProfile(Profile newProfile);
+        bool DeleteProfile(string profileName);
+        bool isThisProfileExists(string newProfileName);
+
     }
 }
