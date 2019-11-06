@@ -54,11 +54,16 @@
             this.btProfileUpdate = new System.Windows.Forms.Button();
             this.btProfileAdd = new System.Windows.Forms.Button();
             this.tbProfileName = new System.Windows.Forms.TextBox();
+            this.lbBuiltInCommands = new System.Windows.Forms.ListBox();
+            this.btBuiltInCommandUpdate = new System.Windows.Forms.Button();
+            this.tbBICommand = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpCustomCommand = new System.Windows.Forms.TabPage();
             this.tpBuiltInCommands = new System.Windows.Forms.TabPage();
-            this.label4 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.gbBIC = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.tpProfile = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.gbProfileModify = new System.Windows.Forms.GroupBox();
@@ -66,11 +71,15 @@
             this.label11 = new System.Windows.Forms.Label();
             this.tpConfiguration = new System.Windows.Forms.TabPage();
             this.label7 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tbBICParameter = new System.Windows.Forms.TextBox();
             this.gbModifyCommand.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpCustomCommand.SuspendLayout();
             this.tpBuiltInCommands.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.gbBIC.SuspendLayout();
             this.tpProfile.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbProfileModify.SuspendLayout();
@@ -357,6 +366,43 @@
             this.tbProfileName.TabIndex = 5;
             this.ttCustom.SetToolTip(this.tbProfileName, "Enter/Modify command ");
             // 
+            // lbBuiltInCommands
+            // 
+            this.lbBuiltInCommands.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbBuiltInCommands.FormattingEnabled = true;
+            this.lbBuiltInCommands.ItemHeight = 20;
+            this.lbBuiltInCommands.Location = new System.Drawing.Point(27, 29);
+            this.lbBuiltInCommands.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.lbBuiltInCommands.Name = "lbBuiltInCommands";
+            this.lbBuiltInCommands.Size = new System.Drawing.Size(416, 164);
+            this.lbBuiltInCommands.Sorted = true;
+            this.lbBuiltInCommands.TabIndex = 0;
+            this.ttCustom.SetToolTip(this.lbBuiltInCommands, "Lists the present custom commands. Double click an item to copy its action script" +
+        " and parameter to clipboard");
+            this.lbBuiltInCommands.SelectedIndexChanged += new System.EventHandler(this.lbBuiltInCommands_SelectedIndexChanged);
+            // 
+            // btBuiltInCommandUpdate
+            // 
+            this.btBuiltInCommandUpdate.Enabled = false;
+            this.btBuiltInCommandUpdate.Location = new System.Drawing.Point(133, 153);
+            this.btBuiltInCommandUpdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btBuiltInCommandUpdate.Name = "btBuiltInCommandUpdate";
+            this.btBuiltInCommandUpdate.Size = new System.Drawing.Size(112, 35);
+            this.btBuiltInCommandUpdate.TabIndex = 9;
+            this.btBuiltInCommandUpdate.Text = "Update";
+            this.ttCustom.SetToolTip(this.btBuiltInCommandUpdate, "Update the modified command/action script/parameter");
+            this.btBuiltInCommandUpdate.UseVisualStyleBackColor = true;
+            this.btBuiltInCommandUpdate.Click += new System.EventHandler(this.btBuiltInCommandUpdate_Click);
+            // 
+            // tbBICommand
+            // 
+            this.tbBICommand.Location = new System.Drawing.Point(133, 38);
+            this.tbBICommand.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tbBICommand.Name = "tbBICommand";
+            this.tbBICommand.Size = new System.Drawing.Size(534, 26);
+            this.tbBICommand.TabIndex = 5;
+            this.ttCustom.SetToolTip(this.tbBICommand, "Enter/Modify command ");
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.btCopy);
@@ -399,7 +445,8 @@
             // 
             // tpBuiltInCommands
             // 
-            this.tpBuiltInCommands.Controls.Add(this.label4);
+            this.tpBuiltInCommands.Controls.Add(this.groupBox3);
+            this.tpBuiltInCommands.Controls.Add(this.gbBIC);
             this.tpBuiltInCommands.Location = new System.Drawing.Point(4, 29);
             this.tpBuiltInCommands.Name = "tpBuiltInCommands";
             this.tpBuiltInCommands.Padding = new System.Windows.Forms.Padding(3);
@@ -408,15 +455,44 @@
             this.tpBuiltInCommands.Text = "BuiltIn Commands";
             this.tpBuiltInCommands.UseVisualStyleBackColor = true;
             // 
-            // label4
+            // groupBox3
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(309, 244);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(274, 36);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "Under Construction";
+            this.groupBox3.Controls.Add(this.lbBuiltInCommands);
+            this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox3.Location = new System.Drawing.Point(78, 23);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox3.Size = new System.Drawing.Size(747, 204);
+            this.groupBox3.TabIndex = 4;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Builtin Commands";
+            // 
+            // gbBIC
+            // 
+            this.gbBIC.Controls.Add(this.tbBICParameter);
+            this.gbBIC.Controls.Add(this.btBuiltInCommandUpdate);
+            this.gbBIC.Controls.Add(this.tbBICommand);
+            this.gbBIC.Controls.Add(this.label4);
+            this.gbBIC.Controls.Add(this.label8);
+            this.gbBIC.Location = new System.Drawing.Point(68, 254);
+            this.gbBIC.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.gbBIC.Name = "gbBIC";
+            this.gbBIC.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.gbBIC.Size = new System.Drawing.Size(757, 247);
+            this.gbBIC.TabIndex = 5;
+            this.gbBIC.TabStop = false;
+            this.gbBIC.Text = "Add/Edit Commands";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(8, 44);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(82, 20);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "Command";
             // 
             // tpProfile
             // 
@@ -442,7 +518,7 @@
             this.groupBox2.Size = new System.Drawing.Size(747, 204);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Custom Commands";
+            this.groupBox2.Text = "Profiles";
             // 
             // gbProfileModify
             // 
@@ -501,6 +577,24 @@
             this.label7.TabIndex = 1;
             this.label7.Text = "Under Construction";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(8, 90);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(104, 20);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Configuration";
+            // 
+            // tbBICParameter
+            // 
+            this.tbBICParameter.Location = new System.Drawing.Point(133, 90);
+            this.tbBICParameter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tbBICParameter.Name = "tbBICParameter";
+            this.tbBICParameter.Size = new System.Drawing.Size(534, 26);
+            this.tbBICParameter.TabIndex = 10;
+            // 
             // frmCustomCommands
             // 
             this.AcceptButton = this.btAdd;
@@ -526,7 +620,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tpCustomCommand.ResumeLayout(false);
             this.tpBuiltInCommands.ResumeLayout(false);
-            this.tpBuiltInCommands.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.gbBIC.ResumeLayout(false);
+            this.gbBIC.PerformLayout();
             this.tpProfile.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.gbProfileModify.ResumeLayout(false);
@@ -561,7 +657,6 @@
         private System.Windows.Forms.ComboBox cbProfile;
         private System.Windows.Forms.TabPage tpProfile;
         private System.Windows.Forms.TabPage tpConfiguration;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btProfileDelete;
@@ -574,5 +669,13 @@
         private System.Windows.Forms.TextBox tbProfileName;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.ListBox lbBuiltInCommands;
+        private System.Windows.Forms.GroupBox gbBIC;
+        private System.Windows.Forms.Button btBuiltInCommandUpdate;
+        private System.Windows.Forms.TextBox tbBICommand;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox tbBICParameter;
+        private System.Windows.Forms.Label label4;
     }
 }

@@ -5,18 +5,23 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Xml;
 
 namespace Go.DataAccess
 {
     public class CommandManager : ICommandManager
     {
         private readonly IXmlOperations _xmlOperations;
-        private readonly IProfileManager _profileManager;
+        private readonly IProfileManager  _profileManager;
+        private readonly IBuiltInCommandManager  _builtInCommandManager;
         private readonly string _profileFilePath;
         private readonly string _customCommandsFilePath;
 
         public DataTable CustomCommandsDT{ get; set; }
-        public DataTable BuiltInCommandsDT{ get; set; }
+        public DataTable BuiltInCommandsDT{ get
+            {
+                return _builtInCommandManager.GetBuiltInCommandDT();
+            } }
         public DataTable ProfilesDT{ 
             get
             {
@@ -36,14 +41,16 @@ namespace Go.DataAccess
         {
             _xmlOperations = xmlOperations;
             _profileManager = new ProfileManager(profileFilePath, applicationStartupPath);
+            _builtInCommandManager = new BuiltInCommandManager(builtInComandsFilePath, applicationStartupPath);
             //TODO parallel reading
             customCommandsFilePath = applicationStartupPath + "\\" + customCommandsFilePath;
-            builtInComandsFilePath = applicationStartupPath + "\\" + builtInComandsFilePath;
-            profileFilePath = applicationStartupPath + "\\" + profileFilePath;
             _customCommandsFilePath = customCommandsFilePath;
-            _profileFilePath = profileFilePath;
             CustomCommandsDT = _xmlOperations.GetXml(customCommandsFilePath);
-            BuiltInCommandsDT = _xmlOperations.GetXml(builtInComandsFilePath);
+        }
+
+        public IEnumerable<string> GetAllBuiltInCommandNames()
+        {
+           return  _builtInCommandManager.GetNames();
         }
 
         public Profile GetProfile(string profileName)
@@ -66,16 +73,7 @@ namespace Go.DataAccess
         }
         public bool isThisBuiltInCommandExists(string commandName)
         {
-            DataView builtInCommandsDT = new DataView(BuiltInCommandsDT)
-            {
-                Sort = "Name"
-            };
-
-            int builtInCommandIndex = builtInCommandsDT.Find(commandName);
-
-            if (builtInCommandIndex == -1)
-                return false;
-            return true;
+            return _builtInCommandManager.isThisExists(commandName);
         }
 
         public List<string> GetAllCustomCommandNames()
@@ -137,23 +135,24 @@ namespace Go.DataAccess
 
         public BuiltInCommand GetBuiltInCommand(string commandName)
         {
-            //1. Find the profile of the given command
-            DataView builtInCommandsDV = new DataView(BuiltInCommandsDT)
-            {
-                Sort = "Name"
-            };
-           
-            int builtInCommandIndex = builtInCommandsDV.Find(commandName);
-            if (builtInCommandIndex != -1)
-            {
-                var ActionScript = builtInCommandsDV[builtInCommandIndex]["ActionScript"].ToString();
-                var Parameter = builtInCommandsDV[builtInCommandIndex]["Parameter"].ToString();
-                var type = Type.GetType("Go.Common.BuiltInCommands."+ ActionScript + ", Go.Common");
-                var newBuiltInCommand = (BuiltInCommand)Activator.CreateInstance(type);
-                newBuiltInCommand.Configuration = Parameter;
-                return newBuiltInCommand;
-            }
-            return null;
+            ////1. Find the profile of the given command
+            //DataView builtInCommandsDV = new DataView(BuiltInCommandsDT)
+            //{
+            //    Sort = "Name"
+            //};
+
+            //int builtInCommandIndex = builtInCommandsDV.Find(commandName);
+            //if (builtInCommandIndex != -1)
+            //{
+            //    var ActionScript = builtInCommandsDV[builtInCommandIndex]["ActionScript"].ToString();
+            //    var Parameter = builtInCommandsDV[builtInCommandIndex]["Parameter"].ToString();
+            //    var type = Type.GetType("Go.Common.BuiltInCommands."+ ActionScript + ", Go.Common");
+            //    var newBuiltInCommand = (BuiltInCommand)Activator.CreateInstance(type);
+            //    newBuiltInCommand.Configuration = Parameter;
+            //    return newBuiltInCommand;
+            //}
+            //return null;
+            return _builtInCommandManager.Get(commandName);
         }
 
         public bool AddCustomCommand(CustomCommand customCommand)
@@ -166,7 +165,10 @@ namespace Go.DataAccess
 
             //2. Read the ProfileCommands file
             customCommand.Profile.CommandFilePath = GetProfileCommandPath(customCommand.Profile.Name);
-            var profileCommandsDT = _xmlOperations.GetXml(customCommand.Profile.CommandFilePath);
+            DataTable profileCommandsDT;
+            profileCommandsDT = _xmlOperations.GetXml(customCommand.Profile.CommandFilePath);
+            if (profileCommandsDT == null)
+                profileCommandsDT = GetDefaultProfileCommandDT();
 
             var copyProfileCommandsDT = profileCommandsDT.Copy();
             DataRow profileCommandRow = copyProfileCommandsDT.NewRow();
@@ -234,6 +236,8 @@ namespace Go.DataAccess
 
                 oldProfileCommandsDT = _xmlOperations.GetXml(oldCustomCommand.Profile.CommandFilePath);
                 newProfileCommandsDT = _xmlOperations.GetXml(newCustomCommand.Profile.CommandFilePath);
+                if (newProfileCommandsDT == null)
+                    newProfileCommandsDT = GetDefaultProfileCommandDT();
 
                 copynewProfileCommandsDT = newProfileCommandsDT.Copy();
                 //add new custom command to new profile command
@@ -286,6 +290,31 @@ namespace Go.DataAccess
             return true;
         }
 
+        private DataTable GetDefaultProfileCommandDT()
+        {
+            var table = new DataTable();
+            var column = new DataColumn
+            {
+                DataType = Type.GetType(Constants.StringType),
+                ColumnName = Constants.Name
+            };
+            table.Columns.Add(column);
+
+            column = new DataColumn
+            {
+                DataType = Type.GetType(Constants.StringType),
+                ColumnName = Constants.ActionScript
+            };
+            table.Columns.Add(column);
+            column = new DataColumn
+            {
+                DataType = Type.GetType(Constants.StringType),
+                ColumnName = Constants.Parameter
+            };
+            table.Columns.Add(column);
+            return table;
+        }
+
         public bool DeleteCustomCommand(CustomCommand customCommand)
         {
             //Delete the entry from custom command file
@@ -319,20 +348,8 @@ namespace Go.DataAccess
 
         public List<Profile> GetAllProfile()
         {
-            //List<Profile> lstProfile = new List<Profile>();
-            //foreach (DataRow item in ProfilesDT.Rows)
-            //{
-            //    lstProfile.Add(new Profile()
-            //    {
-            //        Name = item[Constants.Name].ToString(),
-            //        CommandFilePath = item[Constants.CommandFilePath].ToString()
-            //    });
-            //}
-            //return lstProfile;
             return _profileManager.GetAll();
         }
-
-        
 
         public bool UpdateProfile(Profile oldProfile, Profile newProfile)
         {
@@ -348,14 +365,15 @@ namespace Go.DataAccess
                 else
                     continue;
             }
-            _xmlOperations.WriteXml(copyCustomCommandsDT, _customCommandsFilePath);
+            _xmlOperations.WriteXml(copyCustomCommandsDT, _customCommandsFilePath, XmlType.Profile);
             CustomCommandsDT = copyCustomCommandsDT;
             return true;
         }
 
         public bool AddProfile(Profile newProfile)
         {
-            return _profileManager.Add(newProfile);
+            _profileManager.Add(newProfile);
+            return true;
         }
 
         public bool isThisProfileExists(string newProfileName)
@@ -377,9 +395,14 @@ namespace Go.DataAccess
                     break;
                 }
             }
-            _xmlOperations.WriteXml(copyCustomCommandsDT, _customCommandsFilePath);
+            _xmlOperations.WriteXml(copyCustomCommandsDT, _customCommandsFilePath,XmlType.Profile);
             CustomCommandsDT = copyCustomCommandsDT;
             return true;
+        }
+
+        public bool UpdateBuiltInCommand(string oldCommand, string newCommand, string newConfig)
+        {
+            return _builtInCommandManager.Update(oldCommand, newCommand, newConfig);
         }
     }
 }

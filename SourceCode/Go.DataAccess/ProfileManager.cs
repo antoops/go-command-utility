@@ -75,7 +75,7 @@ namespace Go.DataAccess
             profileDTRow[Constants.CommandFilePath] = newProfile.CommandFilePath;
             profileDTCopy.Rows.Add(profileDTRow);
 
-            _xmlOperations.WriteXml(profileDTCopy, _profileFilePath);
+            _xmlOperations.WriteXml(profileDTCopy, _profileFilePath,XmlType.Profile);
             ProfilesDT = profileDTCopy;
             return true;
         }
@@ -104,7 +104,7 @@ namespace Go.DataAccess
                 File.Move(oldProfile.CommandFilePath, newProfile.CommandFilePath);
             }
             //write to xml file
-            _xmlOperations.WriteXml(copyProfilesDT, _profileFilePath);
+            _xmlOperations.WriteXml(copyProfilesDT, _profileFilePath,XmlType.Profile);
             ProfilesDT  = copyProfilesDT;
             return true;
         }
@@ -126,7 +126,7 @@ namespace Go.DataAccess
                     break;
                 }
             }
-            _xmlOperations.WriteXml(copyProfilesDT, _profileFilePath);
+            _xmlOperations.WriteXml(copyProfilesDT, _profileFilePath,XmlType.Profile);
             ProfilesDT = copyProfilesDT;
 
             return true;
