@@ -169,7 +169,8 @@
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetPath) "$(SolutionDir)\..\Deployment\Go Package\"
 copy /Y $(TargetDir)\*.exe.config "$(SolutionDir)\..\Deployment\Go Package\"
-copy /Y $(TargetDir)\app.config "$(SolutionDir)\..\Deployment\Go Package\"</PostBuildEvent>
+copy /Y $(TargetDir)\app.config "$(SolutionDir)\..\Deployment\Go Package\"
+copy /Y $(TargetDir)\*.dll "$(SolutionDir)\..\Deployment\Go Package\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

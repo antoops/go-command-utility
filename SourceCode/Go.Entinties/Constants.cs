@@ -64,6 +64,7 @@ namespace Go.Common
         public static readonly string ActionScript = "ActionScript";
         public static readonly string Parameter = "Parameter";
         public static readonly string CommandFilePath = "CommandFilePath";
+        public static readonly string StringType = "System.String";
         public static string CustomCommandFilePath = "CustomCommandsFilePath";
     }
 }

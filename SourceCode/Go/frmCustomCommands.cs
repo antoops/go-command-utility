@@ -1,5 +1,6 @@
 ﻿using Go.Common;
 using Go.Common.Entities;
+using Go.Common.Interfaces;
 using Go.DataAccess;
 using System;
 using System.Configuration;
@@ -16,24 +17,94 @@ namespace Go
         string builtInCommandFilePath = ConfigurationManager.AppSettings.Get(Constants.BuiltInCommandFilePath);
 
         CommandManager cmdMgr;
-        string editCommand;
-        CustomCommand editCustomCommand;
+        string currentEditingCustomCommandName;
+        string currentEditingProfileName;
+        CustomCommand currentEditingCustomCommand;
+        Profile currentEditingProfile;
+        BuiltInCommand currentEditingBuiltInCommand;
+        string currentEditingBuiltInCommandName;
+
 
         public frmCustomCommands()
         {
             InitializeComponent();
             cmdMgr = new CommandManager(profileFilePath, customCommandFilePath, builtInCommandFilePath,
                 Application.StartupPath);
-            editCommand = string.Empty;
+            currentEditingCustomCommandName = string.Empty;
         }
 
         private void frmCustomCommands_Load(object sender, EventArgs e)
         {
-            LoadCommandList();
+            LoadCustomCommandList();
+            LoadProfileList();
+            LoadBuiltInCommandList();
 
         }
 
-        public void LoadCommandList()
+        private void LoadBuiltInCommandList()
+        {
+            lbBuiltInCommands.Items.Clear();
+
+            foreach (string item in cmdMgr.GetAllBuiltInCommandNames())
+                lbBuiltInCommands.Items.Add(item);
+
+            if (lbBuiltInCommands.Items.Count > 0)
+            {
+                lbBuiltInCommands.SelectedItem = lbBuiltInCommands.Items[0];
+
+                var biCommand = cmdMgr.GetBuiltInCommand(lbBuiltInCommands.SelectedItem.ToString());
+                currentEditingBuiltInCommand = biCommand;
+                tbBICommand.Text = biCommand.Name;
+                tbBICParameter.Text = biCommand.Parameter ;
+                makeBuiltInCommandEditable();
+            }
+            else
+            {
+                btProfileDelete.Enabled = false;
+            }
+        }
+
+        private void makeBuiltInCommandEditable()
+        {
+            //TODO if command not in profile command file
+            string biCommandName = lbBuiltInCommands.SelectedItem.ToString();
+
+            //calling for normal edit command operation
+            gbBIC.Enabled = true;
+            btBuiltInCommandUpdate.Enabled = true;
+
+            tbBICommand.Text = biCommandName;
+            var biCommand = cmdMgr.GetBuiltInCommand(biCommandName);
+            currentEditingBuiltInCommand = biCommand;
+            currentEditingBuiltInCommandName = biCommandName;
+            tbBICParameter.Text = biCommand.Configuration;
+        }
+
+        private void LoadProfileList()
+        {
+            lbProfiles.Items.Clear();
+
+            foreach (Profile item in cmdMgr.GetAllProfile())
+                lbProfiles.Items.Add(item.Name);
+
+            if (lbProfiles.Items.Count > 0)
+            {
+                lbProfiles.SelectedItem = lbProfiles.Items[0];
+
+                var profile = cmdMgr.GetProfile(lbProfiles.SelectedItem.ToString());
+                currentEditingProfile = profile;
+                tbProfileName.Text = profile.Name;
+                tbProfileCommandPath.Text = profile.CommandFilePath;
+                btProfileDelete.Enabled = true;
+                makeProfileEditable();
+            }
+            else
+            {
+                btProfileDelete.Enabled = false;
+            }
+        }
+
+        public void LoadCustomCommandList()
         {
             lbCustCommands.Items.Clear();
 
@@ -50,7 +121,7 @@ namespace Go
                 lbCustCommands.SelectedItem = lbCustCommands.Items[0];
 
                 var custCommand = cmdMgr.GetCustomCommand(lbCustCommands.SelectedItem.ToString());
-                editCustomCommand = custCommand;
+                currentEditingCustomCommand = custCommand;
                 txtActionScript.Text = custCommand.ActionScript;
                 txtParameter.Text = custCommand.Parameter;
                 cbProfile.SelectedIndex = cbProfile.Items.IndexOf(custCommand.Profile.Name);
@@ -64,6 +135,23 @@ namespace Go
             }
         }
 
+        private void makeProfileEditable()
+        {
+            //TODO if command not in profile command file
+            string profileName = lbProfiles.SelectedItem.ToString();
+           
+            //calling for normal edit command operation
+            gbProfileModify.Enabled = true;
+            btProfileUpdate.Enabled = true;
+            btProfileAdd.Enabled = false;
+
+            tbProfileName.Text = profileName;
+            var profile = cmdMgr.GetProfile(profileName);
+            currentEditingProfile = profile;
+            currentEditingProfileName = profile.Name;
+            tbProfileCommandPath.Text = profile.CommandFilePath;
+           
+        }
 
         private void lbCustCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -84,11 +172,11 @@ namespace Go
                 
                 txtCommand.Text = cmd;
                 var customCommand = cmdMgr.GetCustomCommand(cmd);
-                editCustomCommand = customCommand;
+                currentEditingCustomCommand = customCommand;
                 txtActionScript.Text = customCommand.ActionScript;
                 txtParameter.Text = customCommand.Parameter;
                 cbProfile.SelectedIndex = cbProfile.Items.IndexOf(customCommand.Profile.Name);
-                this.editCommand = cmd;//stroing the current editing command
+                this.currentEditingCustomCommandName = cmd;//stroing the current editing command
             }
             else
             {
@@ -97,7 +185,7 @@ namespace Go
                 btUpdateCommand.Enabled = false;
                 txtCommand.Text = cmd + "Copy";
                 var customCommand = cmdMgr.GetCustomCommand(cmd);
-                editCustomCommand = customCommand;
+                currentEditingCustomCommand = customCommand;
                 txtActionScript.Text = customCommand.ActionScript;
                 txtParameter.Text = customCommand.Parameter;
                 cbProfile.SelectedIndex = cbProfile.Items.IndexOf(customCommand.Profile.Name);
@@ -212,7 +300,9 @@ namespace Go
         private void ApplyChanges()
         {
             MessageBox.Show("Changes successfully applied", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LoadCommandList();
+            LoadCustomCommandList();
+            LoadProfileList();
+            LoadBuiltInCommandList();
         }
 
         private void btUpdateCommand_Click(object sender, EventArgs e)
@@ -232,7 +322,7 @@ namespace Go
             {
                 string newCommand = txtCommand.Text;
 
-                if (newCommand != this.editCommand && cmdMgr.isThisCustomCommandExists(newCommand) )
+                if (newCommand != this.currentEditingCustomCommandName && cmdMgr.isThisCustomCommandExists(newCommand) )
                 {
                     MessageBox.Show("This command already exists, so please select and edit it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -256,7 +346,7 @@ namespace Go
                         Name = cbProfile.SelectedItem.ToString()
                     }
                 };
-                cmdMgr.UpdateCustomCommand(this.editCustomCommand, newCustomCommand);
+                cmdMgr.UpdateCustomCommand(this.currentEditingCustomCommand, newCustomCommand);
 
                 ApplyChanges();
             }
@@ -294,6 +384,153 @@ namespace Go
         private void button1_Click(object sender, EventArgs e)
         {
             makeCmdEditable("Copy");
+        }
+
+       
+
+        private void lbProfiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            makeProfileEditable();
+        }
+
+        private void btProfileDelete_Click(object sender, EventArgs e)
+        {
+            if (lbProfiles.Items.Count > 0)
+            {
+                //deleting the value from custom command settings
+                string profileNameToBeDeleted = lbProfiles.SelectedItem.ToString();
+
+                if (MessageBox.Show("Profile " + profileNameToBeDeleted + " will be deleted, are you sure?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    cmdMgr.DeleteProfile(profileNameToBeDeleted);
+                }
+                else
+                    return;
+
+                ApplyChanges();
+            }
+            else
+            {
+                MessageBox.Show("No items to delete, please add and try again", "Information", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+        }
+
+        private void btProfileNew_Click(object sender, EventArgs e)
+        {
+            //enabling the modify section
+            gbProfileModify.Enabled = true;
+            tbProfileName.Text = string.Empty;
+            tbProfileCommandPath.Text = string.Empty;
+            btProfileAdd.Enabled = true;
+            btProfileUpdate.Enabled = false;
+            tbProfileName.Focus();
+        }
+
+        private void btProfileAdd_Click(object sender, EventArgs e)
+        {
+            var profileCommandPath = tbProfileCommandPath.Text.Trim();
+            var profileName = tbProfileName.Text.Trim();
+
+            //checking both text fields
+            if (profileName == "" || profileCommandPath == "" || !profileCommandPath.Contains(".xml")
+                || !XmlOperations.isXmlExists(profileCommandPath))
+            {
+                MessageBox.Show("Either profle name or file path(xml) is missing/not exists. Please try again", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            else
+            { //checking if already command exists
+                if (cmdMgr.isThisProfileExists(profileName))
+                {
+                    MessageBox.Show("Profile " + profileName + " is already exists, please update it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                //if not exists, then add 
+                var profile = new Profile()
+                {
+                    Name = profileName,
+                    CommandFilePath = profileCommandPath
+                };
+                cmdMgr.AddProfile(profile);
+
+                //apply the changes back to xml
+                ApplyChanges();
+            }
+        }
+
+        private void btProfileUpdate_Click(object sender, EventArgs e)
+        {
+            //checking both text fields
+            if (tbProfileName.Text.Trim() == "" || tbProfileCommandPath.Text.Trim() == "")
+            {
+                MessageBox.Show("Either profile name or path is missing. Please try again", "Information", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+            else
+            {
+                string newProfileName = tbProfileName.Text;
+
+                if (newProfileName != this.currentEditingProfileName && cmdMgr.isThisProfileExists(newProfileName))
+                {
+                    MessageBox.Show("This profile already exists, so please select and edit it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string newAction = txtActionScript.Text.Trim();
+                string newParameter = txtParameter.Text.Trim();
+
+                var newProfile = new Profile()
+                {
+                    Name = newProfileName,
+                    CommandFilePath = tbProfileCommandPath.Text
+                };
+                cmdMgr.UpdateProfile(this.currentEditingProfile, newProfile);
+
+                ApplyChanges();
+            }
+
+        }
+
+        private void lbBuiltInCommands_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            makeBuiltInCommandEditable();
+        }
+
+        private void btBuiltInCommandUpdate_Click(object sender, EventArgs e)
+        {
+            //checking both text fields
+            if (tbBICommand.Text.Trim() == "" || isBICConfigWrong(tbBICParameter.Text))
+            {
+                MessageBox.Show("Either Command name or configuration is wrong. Please try again", "Information", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+            else
+            {
+                string newBICommandName = tbBICommand.Text;
+
+                if (newBICommandName != this.currentEditingBuiltInCommandName && cmdMgr.isThisBuiltInCommandExists(newBICommandName))
+                {
+                    MessageBox.Show("This built in command already exists, so please select and edit it", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                else if (cmdMgr.isThisCustomCommandExists(newBICommandName))
+                {
+                    MessageBox.Show("There is already a custom command, so please user another name", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                cmdMgr.UpdateBuiltInCommand(currentEditingBuiltInCommandName,tbBICommand.Text,tbBICParameter.Text);
+
+                ApplyChanges();
+            }
+        }
+
+        private bool isBICConfigWrong(string bicNewConfig)
+        {
+            if (!string.IsNullOrWhiteSpace(currentEditingBuiltInCommand.Parameter))
+                return string.IsNullOrWhiteSpace(bicNewConfig.Trim());
+            return false;
         }
     }
 }
