@@ -1,8 +1,8 @@
 <?xml version="1.0" standalone="yes"?>
 <CustomCommands>
   <Command>
-    <Name>expense</Name>
-    <ActionScript>excel</ActionScript>
-    <Parameter>"C:\Expense.xlsx"</Parameter>
+    <Name>c</Name>
+    <ActionScript>Chrome</ActionScript>
+    <Parameter></Parameter>
   </Command>
 </CustomCommands>
