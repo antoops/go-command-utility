@@ -1,0 +1,8 @@
+<?xml version="1.0" standalone="yes"?>
+<CustomCommands>
+ <Command>
+    <Name>email</Name>
+    <ActionScript>outlook</ActionScript>
+    <Parameter>/c ipm.note</Parameter>
+  </Command>
+</CustomCommands>
