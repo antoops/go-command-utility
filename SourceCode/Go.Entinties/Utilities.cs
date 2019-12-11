@@ -1,15 +1,13 @@
-﻿using System.IO;
-
+﻿
 namespace Go.Common
 {
     public class Utilities
     {
-        static public string GetXmlPath(string xmlFilePath)
+        static public string GetXmlPath(string xmlFilePath, string startupPath)
         {
-            string path = Directory.GetCurrentDirectory();
             xmlFilePath = xmlFilePath.Contains(":") ?
                 xmlFilePath :
-                path + "\\" + xmlFilePath;
+                startupPath + "\\" + xmlFilePath;
             return xmlFilePath;
         }
     }

@@ -16,7 +16,7 @@ namespace Go.DataAccess
         public DataTable BuiltInCommandDT{ get; set; }
 
         public BuiltInCommandManager(string builtInCommandPath, string applicationStartupPath)
-            : this(new XmlOperations(), builtInCommandPath, applicationStartupPath)
+            : this(new XmlOperations(applicationStartupPath), builtInCommandPath, applicationStartupPath)
         {
 
         }

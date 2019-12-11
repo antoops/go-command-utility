@@ -22,3 +22,4 @@
 /.vs/VSWorkspaceState.json
 /SourceCode/.vs/Go/DesignTimeBuild
 /SourceCode/Go/obj/Release
+/SourceCode/packages

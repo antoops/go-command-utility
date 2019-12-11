@@ -9,13 +9,18 @@ namespace Go.DataAccess
 {
     public class XmlOperations : IXmlOperations
     {
-        public static bool isXmlExists(string xmlFilePath)
+        public string StartupPath { get; set; }
+        public XmlOperations(string appStartupPath)
         {
-            return File.Exists(Utilities.GetXmlPath(xmlFilePath));
+            StartupPath = appStartupPath;
+        }
+        public static bool isXmlExists(string xmlFilePath,string appPath)
+        {
+            return File.Exists(Utilities.GetXmlPath(xmlFilePath, appPath));
         }
         public DataTable GetXml(string xmlFilePath)
         {
-            xmlFilePath = Utilities.GetXmlPath(xmlFilePath);
+            xmlFilePath = Utilities.GetXmlPath(xmlFilePath, StartupPath);
             XmlReader xmlFile = XmlReader.Create(xmlFilePath, new XmlReaderSettings());
             DataTable dataTable;
             try
@@ -39,7 +44,7 @@ namespace Go.DataAccess
 
         public bool WriteXml(DataTable dataTable, string xmlFileName, XmlType xMLType)
         {
-            xmlFileName = Utilities.GetXmlPath(xmlFileName);
+            xmlFileName = Utilities.GetXmlPath(xmlFileName,StartupPath);
             using (DataSet dataSet = new DataSet())
             {
                 dataSet.Tables.Add(dataTable);

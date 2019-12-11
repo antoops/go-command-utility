@@ -433,7 +433,7 @@ namespace Go
 
             //checking both text fields
             if (profileName == "" || profileCommandPath == "" || !profileCommandPath.Contains(".xml")
-                || !XmlOperations.isXmlExists(profileCommandPath))
+                || !XmlOperations.isXmlExists(profileCommandPath,Application.StartupPath))
             {
                 MessageBox.Show("Either profle name or file path(xml) is missing/not exists. Please try again", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

@@ -52,9 +52,16 @@
     <ApplicationIcon>go icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -95,6 +102,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -169,8 +183,9 @@
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetPath) "$(SolutionDir)\..\Deployment\Go Package\"
 copy /Y $(TargetDir)\*.exe.config "$(SolutionDir)\..\Deployment\Go Package\"
-copy /Y $(TargetDir)\app.config "$(SolutionDir)\..\Deployment\Go Package\"
-copy /Y $(TargetDir)\*.dll "$(SolutionDir)\..\Deployment\Go Package\"</PostBuildEvent>
+copy /Y $(TargetDir)\*.dll "$(SolutionDir)\..\Deployment\Go Package\"
+copy /Y $(TargetDir)\Nlog.* "$(SolutionDir)\..\Deployment\Go Package\"
+copy /Y $(TargetDir)\Configurations\* "$(SolutionDir)\..\Deployment\Go Package\Configurations\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
