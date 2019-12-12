@@ -27,8 +27,13 @@ namespace Go
             {
                 Logger.Info("Startup Path : " + Application.StartupPath);
                 var appPath = Application.StartupPath;
+
+                var watch = System.Diagnostics.Stopwatch.StartNew();
                 CommandManager cmdMgr = new CommandManager(profileFilePath, commandFilePath, builtInCommandFilePath,
                     appPath);
+                watch.Stop();
+                var elapsedMs = watch.ElapsedMilliseconds;
+                Logger.Info("Command manager created within : " + elapsedMs.ToString() + " milliseconds");
                 string inputParameter = string.Empty;
                 //checking the argument
                 if (args.Length > 0)
