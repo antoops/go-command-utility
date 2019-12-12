@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Go.DataAccess
@@ -14,7 +16,6 @@ namespace Go.DataAccess
         private readonly IXmlOperations _xmlOperations;
         private readonly IProfileManager  _profileManager;
         private readonly IBuiltInCommandManager  _builtInCommandManager;
-        private readonly string _profileFilePath;
         private readonly string _customCommandsFilePath;
 
         public DataTable CustomCommandsDT{ get; set; }
@@ -40,6 +41,23 @@ namespace Go.DataAccess
             string customCommandsFilePath, string builtInComandsFilePath, string applicationStartupPath)
         {
             _xmlOperations = xmlOperations;
+            //ProfileManager tmpProfileManager = null;
+            //BuiltInCommandManager tmpBuiltInCommandManager = null;
+            //customCommandsFilePath = applicationStartupPath + "\\" + customCommandsFilePath;
+            //_customCommandsFilePath = customCommandsFilePath;
+
+            //var task = new Task[3];
+            //task[0] = new Task(() => { tmpProfileManager = new ProfileManager(profileFilePath, applicationStartupPath); });
+            //task[1] = new Task(() => { tmpBuiltInCommandManager = new BuiltInCommandManager(builtInComandsFilePath, applicationStartupPath); });
+            //task[2] = new Task(() => { CustomCommandsDT = _xmlOperations.GetXml(customCommandsFilePath); });
+
+            ////Run all threads
+            //task.ToList().ForEach(x => { x.Start(); });
+            //Task.WaitAll(task);
+
+            //_profileManager = tmpProfileManager;
+            //_builtInCommandManager = tmpBuiltInCommandManager;
+
             _profileManager = new ProfileManager(profileFilePath, applicationStartupPath);
             _builtInCommandManager = new BuiltInCommandManager(builtInComandsFilePath, applicationStartupPath);
             //TODO parallel reading
