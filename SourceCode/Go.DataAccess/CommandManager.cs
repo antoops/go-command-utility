@@ -4,8 +4,6 @@ using Go.Common.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
-using System.Xml;
 
 namespace Go.DataAccess
 {
@@ -14,7 +12,6 @@ namespace Go.DataAccess
         private readonly IXmlOperations _xmlOperations;
         private readonly IProfileManager  _profileManager;
         private readonly IBuiltInCommandManager  _builtInCommandManager;
-        private readonly string _profileFilePath;
         private readonly string _customCommandsFilePath;
 
         public DataTable CustomCommandsDT{ get; set; }
