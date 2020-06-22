@@ -4,8 +4,6 @@ using Go.Common.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
-using System.Xml;
 
 namespace Go.DataAccess
 {
@@ -14,7 +12,6 @@ namespace Go.DataAccess
         private readonly IXmlOperations _xmlOperations;
         private readonly IProfileManager  _profileManager;
         private readonly IBuiltInCommandManager  _builtInCommandManager;
-        private readonly string _profileFilePath;
         private readonly string _customCommandsFilePath;
 
         public DataTable CustomCommandsDT{ get; set; }
@@ -31,7 +28,7 @@ namespace Go.DataAccess
 
         public CommandManager(string profileFilePath, string commandsFilePath, string builtInComandsFilePath,
             string applicationStartupPath)
-            : this(new XmlOperations(), profileFilePath, commandsFilePath, builtInComandsFilePath, 
+            : this(new XmlOperations(applicationStartupPath), profileFilePath, commandsFilePath, builtInComandsFilePath, 
                   applicationStartupPath)
         {
 
@@ -186,16 +183,6 @@ namespace Go.DataAccess
 
         private string GetProfileCommandPath(string profileName)
         {
-            //var profileCommandPath = string.Empty;
-            //foreach (DataRow item in ProfilesDT.Rows)
-            //{
-            //    if (item[Constants.Name].ToString() == profileName)
-            //    {
-            //        profileCommandPath = item[Constants.CommandFilePath].ToString();
-            //        break;
-            //    }
-            //}
-            //return profileCommandPath;
             return _profileManager.GetCommandPath(profileName);
         }
 

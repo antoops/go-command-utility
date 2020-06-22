@@ -16,7 +16,7 @@ namespace Go.DataAccess
         public DataTable ProfilesDT{ get; set; }
 
         public ProfileManager(string profileFilePath, string applicationStartupPath)
-            : this(new XmlOperations(), profileFilePath, applicationStartupPath)
+            : this(new XmlOperations(applicationStartupPath), profileFilePath, applicationStartupPath)
         {
 
         }
