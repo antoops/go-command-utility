@@ -40,9 +40,8 @@ namespace Go.DataAccess
             _profileManager = new ProfileManager(profileFilePath, applicationStartupPath);
             _builtInCommandManager = new BuiltInCommandManager(builtInComandsFilePath, applicationStartupPath);
             //TODO parallel reading
-            customCommandsFilePath = applicationStartupPath + "\\" + customCommandsFilePath;
-            _customCommandsFilePath = customCommandsFilePath;
-            CustomCommandsDT = _xmlOperations.GetXml(customCommandsFilePath);
+            _customCommandsFilePath = Utilities.GetXmlPath(customCommandsFilePath, applicationStartupPath);
+            CustomCommandsDT = _xmlOperations.GetXml(_customCommandsFilePath);
         }
 
         public IEnumerable<string> GetAllBuiltInCommandNames()
